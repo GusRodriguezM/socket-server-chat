@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import fileUpload from 'express-fileupload'
+import fileUpload from 'express-fileupload';
+import { createServer } from 'node:http';
+import * as SocketIO from 'socket.io';
 import { dbConnection } from '../database/config.js';
 import { authRouter } from '../routes/auth.js';
 import { categoriesRouter } from '../routes/categories.js';
@@ -8,12 +10,15 @@ import { router } from '../routes/users.js';
 import { productsRouter } from '../routes/products.js';
 import { searchRouter } from '../routes/search.js';
 import { uploadFilesRouter } from '../routes/uploads.js';
+import { socketController } from '../sockets/controller.js';
 
 class Server {
 
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
+        this.server = createServer( this.app );
+        this.io = new SocketIO.Server( this.server );
 
         this.paths = {
             authPath: '/api/auth',
@@ -32,6 +37,9 @@ class Server {
 
         //App routes
         this.routes();
+
+        //Sockets
+        this.sockets();
     }
 
     async connectionToDB() {
@@ -66,9 +74,14 @@ class Server {
         this.app.use( this.paths.usersPath, router );
     }
 
+    //Sockets
+    sockets() {
+        this.io.on( 'connection', socketController );
+    }
+
     //Port where the app will run
     listen() {
-        this.app.listen(this.port, () => {
+        this.server.listen(this.port, () => {
             console.log(`The server is up and listening on port, ${this.port}`);
         });
     }
