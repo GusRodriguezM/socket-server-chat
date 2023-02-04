@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { generateJWT } from "../helpers/generate-jwt.js";
 import { googleVerify } from "../helpers/google-verify.js";
 
+//Controller to do a login
 export const login = async( req = request, res = response) => {
 
     const { email, password } = req.body;
@@ -55,7 +56,8 @@ export const login = async( req = request, res = response) => {
 
 }
 
-export const googleSignIn = async( req = request, res = response) => {
+//Controller to do a google sign in
+export const googleSignIn = async( req = request, res = response ) => {
 
     const { id_token } = req.body;
 
@@ -101,4 +103,16 @@ export const googleSignIn = async( req = request, res = response) => {
         });
     }
     
+}
+
+//Controller to renew a token for the user
+export const renewToken = async( req = request, res = response ) => {
+
+    const { user } = req;
+
+    //Generate a JWT
+    const token = await generateJWT( user.id );
+
+    res.json({ user, token });
+
 }
