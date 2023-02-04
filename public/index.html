@@ -39,48 +39,25 @@
 
         </div>
 
-        <div class="col-sm-6"></div>
+        <div class="col-sm-6">
+            <h1>Login</h1>
+            <hr />
+
+            <form class="d-grid">
+                <input type="text" name="email" class="form-control mb-2" placeholder="Email" />
+                <input type="text" name="password" class="form-control mb-2" placeholder="Password" />
+    
+                <button type="submit" class="btn btn-primary">
+                    Login
+                </button>
+            </form>
+        </div>
     </div>
 
     
 
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-    <script>
-        function handleCredentialResponse(response) {
-           
-            //const responsePayload = decodeJwtResponse(response.credential);
-            //Google token or id token
-            // console.log( response.credential );
-
-            const body = { id_token: response.credential };
-
-            fetch('http://localhost:8080/api/auth/google', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify( body )
-            })
-                .then( resp => resp.json() )
-                .then( resp => {
-                    console.log( resp );
-                    localStorage.setItem( 'email', resp.user.email );
-                } )
-                .catch( console.warn );
-        }
-
-        const button = document.getElementById( 'google_signout' );
-        button.onclick = () => {
-            console.log( google.accounts.id );
-            google.accounts.id.disableAutoSelect();
-
-            google.accounts.id.revoke( localStorage.getItem( 'email' ), done => {
-                localStorage.clear();
-                location.reload();
-            });
-        }
-    </script>
+    <script src="./js/auth.js" ></script>
 </body>
 </html>
