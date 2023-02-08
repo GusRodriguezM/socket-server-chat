@@ -31,6 +31,8 @@ myForm.addEventListener( 'submit', e => {
 
         //Saving the token in the localStorage if there is no errors
         localStorage.setItem( 'token', token );
+        //Redirect to the chat page
+        window.location = 'chat.html';
     })
     .catch( err => { console.log(err) } )
 });
@@ -49,6 +51,8 @@ function handleCredentialResponse(response) {
         .then( ({ token }) => {
             //Saving the token in the localStorage
             localStorage.setItem( 'token', token );
+            //Redirect to the chat page
+            window.location = 'chat.html';
         } )
         .catch( console.warn );
 }
