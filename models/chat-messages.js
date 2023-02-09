@@ -23,7 +23,7 @@ class ChatMessages {
     }
 
     //Get the connected users
-    get users() {
+    get activeUsers() {
         return Object.values( this.users );
     }
 

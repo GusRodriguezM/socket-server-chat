@@ -68,14 +68,32 @@ const connectSocket = async() => {
     });
 
     //Socket to receive the list of active users
-    socket.on( 'active-users', () => {
-
-    });
+    socket.on( 'active-users', usersList );
 
     //Socket to receive private messages
     socket.on( 'private-message', () => {
 
     });
+
+}
+
+//Function to set the html for the list of active users
+const usersList = ( users = [] ) => {
+
+    let usersHtml = '';
+    users.forEach( ({ name, uid }) => {
+
+        usersHtml += `
+            <li>
+                <p>
+                    <h5 class="text-success"> ${name} </h5>
+                    <span class="fs-6 text-muted"> ${uid} </span>
+                </p>
+            </li>
+        `;
+    });
+
+    ulUsers.innerHTML = usersHtml;
 
 }
 

@@ -76,7 +76,7 @@ class Server {
 
     //Sockets
     sockets() {
-        this.io.on( 'connection', socketController );
+        this.io.on( 'connection', ( socket ) => socketController( socket, this.io ) );
     }
 
     //Port where the app will run
