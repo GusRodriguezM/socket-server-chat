@@ -63,9 +63,7 @@ const connectSocket = async() => {
     });
 
     //Socket to listen the messages to receive
-    socket.on( 'receive-messages', () => {
-
-    });
+    socket.on( 'receive-messages', messagesList );
 
     //Socket to receive the list of active users
     socket.on( 'active-users', usersList );
@@ -96,6 +94,39 @@ const usersList = ( users = [] ) => {
     ulUsers.innerHTML = usersHtml;
 
 }
+
+//Function to set in the html the list of messages
+const messagesList = ( messages = [] ) => {
+
+    let messagesHtml = '';
+    messages.forEach( ({ name, message }) => {
+
+        messagesHtml += `
+            <li>
+                <p>
+                    <span class="text-primary"> ${name} </span>
+                    <span> ${message} </span>
+                </p>
+            </li>
+        `;
+    });
+
+    ulMessages.innerHTML = messagesHtml;
+
+}
+
+//Adding an event listener to the input for the message
+txtMessage.addEventListener( 'keyup', ({ keyCode}) => {
+    const message = txtMessage.value;
+    const uid = txtUid.value;
+
+    if( keyCode !== 13 ) return; 
+    if( message.length === 0 ) return;
+    
+    //Emit a message with the value and the uid
+    socket.emit( 'send-message', { message, uid } );
+    
+});
 
 const main = async() => {
 

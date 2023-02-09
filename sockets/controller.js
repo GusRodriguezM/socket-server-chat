@@ -2,6 +2,7 @@ import { Socket } from "socket.io";
 import { checkJWT } from "../helpers/index.js";
 import { ChatMessages } from "../models/index.js";
 
+//Instance of the class for the chat and the messages
 const chatMessages = new ChatMessages();
 
 //Controller for the connections
@@ -19,7 +20,8 @@ export const socketController = async( socket = new Socket(), io ) => {
     chatMessages.connectUser( user );
     //Sending the active users through the socket
     io.emit( 'active-users', chatMessages.activeUsers );
-
+    //Sending the last messages to the new connected user
+    socket.emit( 'receive-messages', chatMessages.lastMessages );
 
     //Clean the list of active users when someone disconnects
     socket.on( 'disconnect', () => {
@@ -27,6 +29,14 @@ export const socketController = async( socket = new Socket(), io ) => {
         chatMessages.disconnectUser( user.id );
         //Emit the updated list with the current active users
         io.emit( 'active-users', chatMessages.activeUsers );
+    });
+
+    //Send a message to chat room
+    socket.on( 'send-message', ({ uid, message }) => {
+        //Preparing the message to send
+        chatMessages.sendMessage( user.id, user.name, message );
+        //Send the historic of the messages
+        io.emit( 'receive-messages', chatMessages.lastMessages );
     });
 
     console.log(`${user.name} is connected`);
