@@ -7,6 +7,13 @@ const url = ( window.location.hostname.includes('localhost') )
 let user = null;
 let socket = null;
 
+//HTML References
+const txtUid = document.querySelector('#txtUid');
+const txtMessage = document.querySelector('#txtMessage');
+const ulUsers = document.querySelector('#ulUsers');
+const ulMessages = document.querySelector('#ulMessages');
+const btnLogout = document.querySelector('#btnLogout');
+
 //Validate the token from the localStorage
 const validateJWT = async() => {
     //Getting the socket from the localStorage
@@ -38,10 +45,36 @@ const connectSocket = async() => {
     
     // Client socket connection
     //With this extra headers we can sent data through the connectiong between the client and the server
-    const socket = io({
+    socket = io({
         'extraHeaders': {
             'x-token': localStorage.getItem( 'token' )
         }
+    });
+
+    //Events
+    //Socket when the client is connected
+    socket.on( 'connect', () => {
+        console.log('Socket online');
+    });
+
+    //Socket when the user is disconnected
+    socket.on( 'disconnect', () => {
+        console.log('Socket offline');
+    });
+
+    //Socket to listen the messages to receive
+    socket.on( 'receive-messages', () => {
+
+    });
+
+    //Socket to receive the list of active users
+    socket.on( 'active-users', () => {
+
+    });
+
+    //Socket to receive private messages
+    socket.on( 'private-message', () => {
+
     });
 
 }
