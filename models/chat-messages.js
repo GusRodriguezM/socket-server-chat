@@ -8,11 +8,23 @@ class Message {
     }
 }
 
+//Class to model a private message
+class PrivateMessage {
+    constructor( uid, name, message, uidReceiver, receiverName ) {
+        this.uid = uid;
+        this.name = name;
+        this.message = message;
+        this.uidReceiver = uidReceiver;
+        this.receiverName = receiverName;
+    }
+}
+
 //Class to model the messages of the chat
 class ChatMessages {
     
     constructor() {
         this.messages = [];
+        this.privateMessages = [];
         this.users = {};
     }
 
@@ -20,6 +32,13 @@ class ChatMessages {
     get lastMessages() {
         this.messages = this.messages.splice(0, 10);
         return this.messages;
+    }
+
+    //Find specific messages that matches with the id
+    myPrivateMessages( uid = '' ) {
+        const messages = this.privateMessages;
+        let personalMessages = messages.find( msgs => msgs.uidReceiver === uid );
+        return personalMessages;
     }
 
     //Get the connected users
@@ -32,14 +51,19 @@ class ChatMessages {
         this.messages.unshift( new Message( uid, name, message) );
     }
 
+    //Method to send a private message
+    sendPrivateMessage( uid, name, message, uidReceiver, receiverName ) {
+        this.privateMessages.unshift( new PrivateMessage( uid, name, message, uidReceiver, receiverName ) );
+    }
+
     //Add the user to the list
     connectUser( user ) {
         this.users[ user.id ] = user;
     }
 
     //Method to remove an user from the list (when disconnects)
-    disconnectUser( user ) {
-        delete this.users[ user.id ];
+    disconnectUser( id ) {
+        delete this.users[ id ];
     }
 
 }

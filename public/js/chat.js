@@ -6,12 +6,14 @@ const url = ( window.location.hostname.includes('localhost') )
 
 let user = null;
 let socket = null;
+let arrMessages = [];
 
 //HTML References
 const txtUid = document.querySelector('#txtUid');
 const txtMessage = document.querySelector('#txtMessage');
 const ulUsers = document.querySelector('#ulUsers');
 const ulMessages = document.querySelector('#ulMessages');
+const ulPrivateMessages = document.querySelector('#ulPrivateMessages');
 const btnLogout = document.querySelector('#btnLogout');
 
 //Validate the token from the localStorage
@@ -69,9 +71,7 @@ const connectSocket = async() => {
     socket.on( 'active-users', usersList );
 
     //Socket to receive private messages
-    socket.on( 'private-message', () => {
-
-    });
+    socket.on( 'private-message', privateMessagesList );
 
 }
 
@@ -115,6 +115,26 @@ const messagesList = ( messages = [] ) => {
 
 }
 
+//Function to set in the html the list of private messages
+const privateMessagesList = ( messages = {} ) => {
+    arrMessages.unshift( messages );
+    let messagesHtml = '';
+    arrMessages.forEach( ({ name, message }) => {
+
+        messagesHtml += `
+            <li>
+                <p>
+                    <span class="text-primary"> ${name} </span>
+                    <span> ${message} </span>
+                </p>
+            </li>
+        `;
+    });
+
+    ulPrivateMessages.innerHTML = messagesHtml;
+
+}
+
 //Adding an event listener to the input for the message
 txtMessage.addEventListener( 'keyup', ({ keyCode}) => {
     const message = txtMessage.value;
@@ -129,9 +149,7 @@ txtMessage.addEventListener( 'keyup', ({ keyCode}) => {
 });
 
 const main = async() => {
-
     await validateJWT();
-
 }
 
 main();
